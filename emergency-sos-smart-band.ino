@@ -7,7 +7,7 @@
 #include <TinyGPS++.h>
 
 /*************** USER CONFIG ****************/
-const char ALERT_NUMBER[] = "+918088765085";
+const char ALERT_NUMBER[] = "+91XXXXXXXXX";//Replace +91XXXXXXXXX with youre phone number if out of india replace +91 to youre respective country code also ensure 2g avilability
 
 /*************** OLED CONFIG ****************/
 #define SCREEN_WIDTH 128
@@ -289,4 +289,5 @@ void loop() {
 
   delay(50);
 }
+
 

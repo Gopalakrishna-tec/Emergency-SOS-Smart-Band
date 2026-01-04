@@ -157,3 +157,6 @@ const char ALERT_NUMBER[] = "+91XXXXXXXXXX";
 ## ❤️ Safety First
 
 **Emergency SOS Smart Band – Every second matters.**
+**Credits**
+1.Vaibhav V K Naik ( VU3ZNL) - President & Honable Trustee - TARRL , Dept of Electronics - ST Philomena Pre University College, Puttur.
+2.IDT Labs - Department of Electronics and Commnucation - KVG College of Engineering (KVGCE) Sullia.

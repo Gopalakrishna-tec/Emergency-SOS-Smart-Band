@@ -1,33 +1,41 @@
+---
+
 # 🚨 Emergency SOS Smart Band (ESP32)
 
-An **ESP32-based Emergency SOS Smart Band** designed for **women’s safety**.
-The device sends an SOS SMS with live GPS location and automatically places calls to an emergency contact until the call is answered.
+An **ESP32-based Emergency SOS Smart Band** developed for **women’s safety and personal emergency response**.
+The device instantly sends an SOS SMS containing **live GPS location data** and **automatically places emergency calls** with an **auto-redial mechanism** until the call is answered.
+
+> **Designed for rapid response when every second matters.**
 
 ---
 
-## 📌 Features
+## ✨ Key Features
 
-* One-button SOS emergency trigger
-* Automatic SOS on abnormal motion / fall detection
-* Live GPS tracking
-* SMS alert with Google Maps location link
-* Automatic calling with **auto-redial every 30 seconds**
-* Real-time sensor data on OLED display
-* Temperature, pressure, altitude monitoring
+* One-button **SOS emergency trigger**
+* **Automatic SOS activation** on abnormal motion or fall detection
+* **Live GPS location tracking**
+* SOS **SMS alert with Google Maps location link**
+* **Automatic voice calling** with auto-redial every **30 seconds**
+* Real-time system and sensor data on **OLED display**
+* Environmental monitoring:
+
+  * Temperature
+  * Pressure
+  * Altitude
 * GSM signal strength monitoring
-* IST time conversion
+* **Local time display (UTC-based conversion)**
 
 ---
 
 ## 🧠 Working Principle
 
-When SOS is triggered:
+When an SOS event is triggered (manually or automatically):
 
-1. SMS alert is sent to the emergency number
-2. GPS location is shared via Google Maps link
-3. Phone call is initiated
-4. If unanswered, device retries every 30 seconds
-5. Process continues until the call is answered
+1. An **SOS SMS alert** is sent to the emergency contact
+2. **Live GPS coordinates** are included via a Google Maps link
+3. An **emergency call** is initiated
+4. If unanswered, the system **retries every 30 seconds**
+5. The cycle continues until the call is successfully answered
 
 ---
 
@@ -36,32 +44,32 @@ When SOS is triggered:
 * ESP32 Development Board
 * SIM800C GSM Module
 * GPS Module (Neo-6M or equivalent)
-* SSD1306 OLED Display (128×64)
+* SSD1306 OLED Display (128 × 64)
 * BMP280 Sensor (Temperature, Pressure, Altitude)
-* MPU6050 Sensor (Motion / Fall Detection)
+* MPU6050 Sensor (Motion & Fall Detection)
 * SOS Push Button
 * GSM & GPS Antennas
-* Battery / Power Supply
+* Rechargeable Battery / Power Supply
 
 ---
 
-## 🔌 Pin Connections
+## 🔌 Pin Configuration
 
-### GPS (UART2)
+### 📍 GPS Module (UART2)
 
-| ESP32 Pin | GPS |
-| --------- | --- |
-| GPIO 16   | RX  |
-| GPIO 17   | TX  |
+| ESP32 Pin | GPS Pin |
+| --------- | ------- |
+| GPIO 16   | RX      |
+| GPIO 17   | TX      |
 
-### SIM800C (UART1)
+### 📞 SIM800C GSM Module (UART1)
 
-| ESP32 Pin | SIM800 |
-| --------- | ------ |
-| GPIO 25   | RX     |
-| GPIO 26   | TX     |
+| ESP32 Pin | SIM800C Pin |
+| --------- | ----------- |
+| GPIO 25   | RX          |
+| GPIO 26   | TX          |
 
-### SOS Button
+### 🆘 SOS Push Button
 
 | ESP32 Pin | Function                  |
 | --------- | ------------------------- |
@@ -71,7 +79,7 @@ When SOS is triggered:
 
 ## 📚 Required Libraries
 
-Install the following libraries from Arduino Library Manager:
+Install the following libraries via **Arduino Library Manager**:
 
 * Adafruit SSD1306
 * Adafruit GFX Library
@@ -84,22 +92,63 @@ Install the following libraries from Arduino Library Manager:
 
 ## ⚙️ Configuration
 
-Edit the emergency contact number in the code:
+Edit the emergency contact number in the source code:
 
 ```cpp
-const char ALERT_NUMBER[] = "+91XXXXXXXXXX";
+const char ALERT_NUMBER[] = "+XXXXXXXXXXXX";
 ```
+
+> 🔧 Replace `XXXXXXXXXX` with the **mobile number** and `+XX` with the **country code**
+> *(Example: `+91XXXXXXXXXX` for India)*
 
 ---
 
-## 📩 SMS Alert Includes
+## 🌍 Time Zone Configuration (UTC → Local Time)
 
-* SOS Alert Message
-* Device name
-* Time (IST)
+The firmware converts **UTC time received from GPS** to **local time** using a fixed offset.
+
+By default, the code is set for **India (IST – UTC +5:30)**.
+If you are using this project in **any other country**, you must change the UTC offset values to match your region.
+
+### 🇮🇳 Example: India (IST – UTC +5:30)
+
+```cpp
+int utcOffsetHours = 5;
+int utcOffsetMinutes = 30;
+```
+
+### 🇺🇸 Example: United States (Eastern Standard Time – UTC −5:00)
+
+```cpp
+int utcOffsetHours = -5;
+int utcOffsetMinutes = 0;
+```
+
+### 🇬🇧 Example: United Kingdom (GMT – UTC +0:00)
+
+```cpp
+int utcOffsetHours = 0;
+int utcOffsetMinutes = 0;
+```
+
+> ⚠️ **Important:**
+>
+> * Set the UTC offset according to your **local region**
+> * Incorrect values will result in **wrong time shown on OLED and SMS alerts**
+> * Daylight Saving Time (DST), if applicable, must be handled manually
+
+---
+
+## 📩 SMS Alert Contents
+
+Each SOS SMS includes:
+
+* Emergency alert message
+* Device identifier
+* Current local time
 * Latitude & Longitude
-* Altitude (m)
-* Pressure (hPa)
+* Altitude (meters)
+* Atmospheric pressure (hPa)
 * Temperature (°C)
 * Google Maps live location link
 
@@ -107,56 +156,101 @@ const char ALERT_NUMBER[] = "+91XXXXXXXXXX";
 
 ## 🖥 OLED Display Information
 
+The OLED screen displays:
+
 * Device name
-* Current time (IST)
+* Current local time
 * Latitude & Longitude
 * Temperature
 * Altitude
 * Pressure
-* SOS status
+* SOS system status
 
 ---
 
-## 🔁 Auto-Redial Feature
+## 🔁 Auto-Redial Logic
 
-* Automatically calls emergency contact
-* Retries every **30 seconds**
-* Stops only when call is answered
+* Automatically places a call to the emergency contact
+* Retries every **30 seconds** if unanswered
+* Stops **only after the call is successfully answered**
 
 ---
 
-## 🚀 Upload Instructions
+## 🚀 Upload & Deployment Instructions
 
-1. Open Arduino IDE
+1. Open **Arduino IDE**
 2. Select **Board → ESP32 Dev Module**
-3. Select correct COM port
-4. Install required libraries
+3. Choose the correct **COM port**
+4. Install all required libraries
 5. Upload the code
-6. Power the device
+6. Power the device and verify GSM/GPS connectivity
 
 ---
 
 ## ⚠️ Important Notes
 
-* SIM card must support **SMS and calling**
-* Ensure sufficient network signal
-* Intended for **educational and safety use only**
+* SIM card must support **SMS and voice calling**
+* Ensure adequate **GSM network coverage**
+* GPS requires **clear sky visibility** for faster fix
+* Intended strictly for **educational, research, and safety applications**
 
 ---
 
-## 📈 Future Improvements
+## 🔮 Future Enhancements
 
-* Multiple emergency contacts
-* Mobile app integration
-* Battery level monitoring
-* Cloud data logging
-* Vibration / buzzer feedback
+* Support for **multiple emergency contacts**
+* Companion **mobile application**
+* Battery level monitoring & alerts
+* Cloud-based data logging
+* Haptic feedback (vibration motor / buzzer)
 
 ---
 
 ## ❤️ Safety First
 
-**Emergency SOS Smart Band – Every second matters.**
-**Credits**
-*.Vaibhav V K Naik ( VU3ZNL) - President & Honable Trustee - TARRL , Dept of Electronics - ST Philomena Pre University College, Puttur.
-*.IDT Labs - Department of Electronics and Commnucation - KVG College of Engineering (KVGCE) Sullia.
+**Emergency SOS Smart Band — Because help should never be far away.**
+
+---
+
+## 🏁 Project Credits & Acknowledgements
+
+This project was **conceptualized, planned, researched, and developed** under the **TARRL (Tulunadu Amateur Radio Relay League)** initiative, with a focus on **safety & assurity-oriented embedded systems**.
+
+🔗 **Official Website:** [https://www.tarrltulunadu.in](https://www.tarrltulunadu.in)
+
+---
+
+### 👤 Core Contributors (TARRL)
+
+* **Mr. S. Renu Kshirsagar (VU3CQM)**
+  *Trustee & E&TW Head – TARRL*
+  **Software Development & System Planning**
+
+* **Vaibhav V. K. Naik (VU3ZNL)**
+  *President & Honorable Trustee – TARRL*
+  Department of Electronics
+  St. Philomena Pre-University College, Puttur
+  **Software & Hardware Development, Research, and Overall Project Planning**
+
+---
+
+### 🏢 Institutional Support & Funding
+
+* **Tulunadu Amateur Radio Relay League (TARRL)**
+  Provided organizational support and a research-driven environment for project planning and development.
+
+* **IDT Labs**
+  Department of Electronics and Communication Engineering
+  KVG College of Engineering (KVGCE), Sullia
+
+  The authors sincerely acknowledge **IDT Labs** for **financial support (funding)**, **planning assistance**, and **presentation guidance**. Special thanks are extended to the **11 team members** who supported the project through collaboration and teamwork.
+
+---
+
+### 📜 Declaration
+
+This project is intended solely for **educational, research, and safety-focused use**.
+All contributors have been duly acknowledged, and no conflict of interest is declared.
+
+---
+
